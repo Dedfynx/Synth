@@ -10,8 +10,13 @@ MainComponent::MainComponent()
     levelSlider.setTextBoxStyle (juce::Slider::TextBoxRight, false, 100, 20);
     levelLabel.setText ("Noise Level", juce::dontSendNotification);
 
+    scope.setBufferSize (128);
+    scope.setSamplesPerBlock (16);
+    scope.setColours (juce::Colours::black, juce::Colours::white);
+
     addAndMakeVisible (&levelSlider);
     addAndMakeVisible (&levelLabel);
+    addAndMakeVisible (&scope);
 
 }
 
@@ -38,6 +43,7 @@ void MainComponent::resized()
 {
     levelLabel .setBounds (10, 10, 90, 20);
     levelSlider.setBounds (100, 10, getWidth() - 110, 20);
+    scope.setBounds (10, 30, getWidth() - 20, 200);
 }
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -52,14 +58,16 @@ void MainComponent::releaseResources()
 
 void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 {
+    auto* buffer = bufferToFill.buffer;
     auto level = (float) levelSlider.getValue();
 
-    for (auto channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
+    for (auto channel = 0; channel < buffer->getNumChannels(); ++channel)
     {
-        // Get a pointer to the start sample in the buffer for this audio output channel
-        auto* buffer = bufferToFill.buffer->getWritePointer (channel, bufferToFill.startSample);
-        // Fill the required number of samples with noise between -0.125 and +0.125
+        auto* data = buffer->getWritePointer (channel, bufferToFill.startSample);
+
         for (auto sample = 0; sample < bufferToFill.numSamples; ++sample)
-            buffer[sample] = random.nextFloat() * level;
+            data[sample] = random.nextFloat() * level;
     }
+
+    scope.pushBuffer (*buffer);
 }

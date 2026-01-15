@@ -29,7 +29,7 @@ private:
     juce::Random random;
     juce::Slider levelSlider;
     juce::Label levelLabel;
-
+    juce::AudioVisualiserComponent scope { 1 };
 
     static constexpr auto rampLengthSamples = 128;
 
