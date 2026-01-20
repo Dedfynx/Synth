@@ -1,4 +1,4 @@
-**# Synth
+# Synth
 
 Petit projet de recreation d'un synthetiseur en C++
 
