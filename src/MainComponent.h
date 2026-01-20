@@ -72,6 +72,7 @@ private:
     double currentFrequency = 440.0, targetFrequency = 440.0;
     float currentLevel = 0.1f, targetLevel = 0.1f;
 
+
     void timerCallback() override
     {
         keyboardComponent.grabKeyboardFocus();
